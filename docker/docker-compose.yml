@@ -1,0 +1,32 @@
+version: '3.1'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./php/Dockerfile
+    ports:
+      - '80:80'
+      - '443:443'
+      - '3000:3000'
+      - '3001:3001'
+    volumes:
+      - '..:/var/www/html'
+      - './apache/sites-enabled:/etc/apache2/sites-enabled'
+      - './php/php.ini:/usr/local/etc/php/conf.d/php.ini'
+      - './php/xdebug.log:/usr/local/etc/php/xdebug.log'
+    depends_on:
+      - mariadb
+  mariadb:
+    image: 'mariadb:10.3'
+    environment:
+      MYSQL_PASSWORD: rootroot
+      MYSQL_ROOT_PASSWORD: rootroot
+      MYSQL_USER: root
+      MYSQL_DATABASE: test
+    ports:
+      - '3306:3306'
+    volumes:
+      - 'mariadb-103:/var/lib/mysql'
+      - './mariadb/my.cnf:/etc/mysql/my.cnf'
+volumes:
+  mariadb-103: null
